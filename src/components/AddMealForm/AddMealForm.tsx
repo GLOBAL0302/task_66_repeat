@@ -1,4 +1,4 @@
-import { Box, Button, Grid2, TextField, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Grid2, TextField, Typography } from '@mui/material';
 import { MealTimes } from '../../CONSTANTS.ts';
 import React, { useState } from 'react';
 import { MealMutationState } from '../../types.ts';
@@ -8,11 +8,12 @@ import { useNavigate } from 'react-router-dom';
 const initialState = {
   mealTime: '',
   mealDescription: '',
-  mealCalories: 0,
+  mealCalories: '',
 };
 
 const AddMealForm = () => {
   const [mealMutation, setMealMutation] = useState<MealMutationState>(initialState);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -22,8 +23,15 @@ const AddMealForm = () => {
 
   const onFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await axiosApi.post('/mealPlans.json', mealMutation);
-    navigate('/');
+    try {
+      setLoading(true);
+      await axiosApi.post('/mealPlans.json', mealMutation);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+      navigate('/');
+    }
   };
 
   return (
@@ -69,8 +77,8 @@ const AddMealForm = () => {
           />
         </Grid2>
         <Grid2 marginLeft="auto">
-          <Button type="submit" variant="outlined" color="inherit">
-            Add new meal
+          <Button type="submit" variant="outlined" color="inherit" disabled={loading}>
+            Add new meal {loading && <CircularProgress color="inherit"/>}
           </Button>
         </Grid2>
       </Grid2>

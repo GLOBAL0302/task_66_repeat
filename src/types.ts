@@ -1,5 +1,9 @@
 export interface MealMutationState {
   mealTime: string;
   mealDescription: string;
-  mealCalories: number;
+  mealCalories: string;
+}
+
+export interface MealPlansState extends MealMutationState {
+  id: string;
 }
