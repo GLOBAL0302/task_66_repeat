@@ -2,7 +2,8 @@ import './App';
 import { Container, Typography } from '@mui/material';
 import { NavLink, Route, Routes } from 'react-router-dom';
 import Home from './containers/Home.tsx';
-import AddNewMeal from './containers/AddNewMeal.tsx';
+import EditMeal from './containers/EditMeal.tsx';
+import AddMealForm from './components/AddMealForm/AddMealForm.tsx';
 
 const App = () => {
   return (
@@ -14,8 +15,9 @@ const App = () => {
       <Container maxWidth="lg">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path='/addNewMeal' element={<AddNewMeal />}/>
-          <Route path='/editMeal:id' element={<AddNewMeal/>}/>
+          <Route path="/addNewMeal" element={<AddMealForm />} />
+          <Route path="/editMeal/:id" element={<EditMeal />} />
+          <Route path="*" element={<h2>Not Found Dear</h2>} />
         </Routes>
       </Container>
     </>

@@ -5,14 +5,21 @@ import { MealMutationState } from '../../types.ts';
 import { axiosApi } from '../../axiosApi.ts';
 import { useNavigate } from 'react-router-dom';
 
+interface Props {
+  existingMealPlan?: MealMutationState;
+  updateMealPlan?: (MealMutationState: MealMutationState) => void;
+  edit?: boolean;
+}
+
 const initialState = {
   mealTime: '',
   mealDescription: '',
   mealCalories: '',
 };
 
-const AddMealForm = () => {
-  const [mealMutation, setMealMutation] = useState<MealMutationState>(initialState);
+const AddMealForm: React.FC<Props> = ({ existingMealPlan = initialState, updateMealPlan, edit = false }) => {
+  const [mealMutation, setMealMutation] = useState<MealMutationState>(existingMealPlan);
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -25,7 +32,11 @@ const AddMealForm = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      await axiosApi.post('/mealPlans.json', mealMutation);
+      if (edit) {
+        updateMealPlan(mealMutation);
+      } else {
+        await axiosApi.post('/mealPlans.json', mealMutation);
+      }
     } catch (e) {
       console.error(e);
     } finally {
@@ -37,11 +48,17 @@ const AddMealForm = () => {
   return (
     <Box component="div">
       <Typography variant="h5" component="h5" marginBottom={3}>
-        Add Meal
+        {edit ? 'Update' : 'Add'} Meal
       </Typography>
       <Grid2 container component="form" onSubmit={onFormSubmit} flexDirection="column" gap={5}>
         <Grid2>
-          <select required onChange={handleChange} name="mealTime" style={{ width: '100%', padding: '10px' }}>
+          <select
+            required
+            value={mealMutation.mealTime}
+            onChange={handleChange}
+            name="mealTime"
+            style={{ width: '100%', padding: '10px' }}
+          >
             <option disabled>Select Meal</option>
             {MealTimes.map((meal) => (
               <option key={meal} value={meal}>
@@ -52,6 +69,7 @@ const AddMealForm = () => {
         </Grid2>
         <Grid2>
           <TextField
+            value={mealMutation.mealDescription}
             required
             type="text"
             onChange={handleChange}
@@ -65,6 +83,7 @@ const AddMealForm = () => {
         </Grid2>
         <Grid2>
           <TextField
+            value={mealMutation.mealCalories}
             required
             type="number"
             onChange={handleChange}
@@ -78,7 +97,7 @@ const AddMealForm = () => {
         </Grid2>
         <Grid2 marginLeft="auto">
           <Button type="submit" variant="outlined" color="inherit" disabled={loading}>
-            Add new meal {loading && <CircularProgress color="inherit"/>}
+            {edit ? 'Update' : 'Add New Meal'} {loading && <CircularProgress color="inherit" />}
           </Button>
         </Grid2>
       </Grid2>

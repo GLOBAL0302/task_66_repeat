@@ -1,6 +1,7 @@
 import { Box, Button, Grid2, Typography } from '@mui/material';
 import { MealPlansState } from '../../types.ts';
 import { axiosApi } from '../../axiosApi.ts';
+import { NavLink } from 'react-router-dom';
 
 interface Props {
   oneMealPlan: MealPlansState;
@@ -27,9 +28,11 @@ const OneMealPlan: React.FC<Props> = ({ oneMealPlan, fetchMealPlans }) => {
           <strong style={{ textDecoration: 'underline' }}>{oneMealPlan.mealCalories} kcal</strong>
         </Grid2>
         <Grid2 sx={{ marginLeft: '20%' }}>
-          <Button variant="outlined" color="inherit" sx={{ marginRight: 2 }}>
-            Edit
-          </Button>
+          <NavLink to={`/editMeal/${oneMealPlan.id}`}>
+            <Button variant="outlined" color="inherit" sx={{ marginRight: 2 }}>
+              Edit
+            </Button>
+          </NavLink>
           <Button
             variant="outlined"
             color="inherit"
